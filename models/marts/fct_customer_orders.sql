@@ -47,22 +47,6 @@ paid_orders as (
             on orders.user_id = customers.id 
 ),
 
-x as (
-
-    select
-        paid_orders.order_id,
-        sum(p2.total_amount_paid) as customer_lifetime_value
-    from paid_orders 
-    left join 
-        paid_orders as p2 on 
-            paid_orders.customer_id = p2.customer_id and 
-            paid_orders.order_id >= p2.order_id
-    group by 1
-    order by paid_orders.order_id
-),
--- Final CTE
--- Simple Select Statement
-
 customer_orders as (
     select 
         c.id as customer_id,
@@ -74,7 +58,10 @@ customer_orders as (
     left join 
         orders on orders.user_id = c.id 
     group by 1
-    )
+    ),
+
+-- Final CTE
+final as (
 
 select
     paid_orders.*,
@@ -90,7 +77,13 @@ select
         ) then 'new'
         else 'return' 
     end as nvsr,
-    x.customer_lifetime_value,
+
+    -- customer lifetime value
+    sum(total_amount_paid) over (
+        partition by paid_orders.customer_id
+        order by paid_orders.order_placed_at
+    ) as customer_lifetime_value,
+    
     -- fdos = first day of sale
     first_value(paid_orders.order_placed_at) over (
         partition by paid_orders.customer_id
@@ -100,6 +93,7 @@ from
     paid_orders
     left join
         customer_orders using (customer_id)
-    left outer join 
-        x on x.order_id = paid_orders.order_id
-order by order_id
+)
+
+-- Simple Select Statement
+select * from final
