@@ -11,3 +11,9 @@ One of the following values:
 | returned       | Item has been returned                           |
 
 {% enddocs %}
+
+{% docs payments_amount %}
+	
+Amount is stored as cents, so we are dividing by 100 in order to show dollars, and renaming it Payment_Amount.
+
+{% enddocs %}
