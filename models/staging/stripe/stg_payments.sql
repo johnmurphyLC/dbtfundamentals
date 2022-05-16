@@ -1,13 +1,13 @@
 with payments as (
 
 select
-    ID as customer_id
-,   ORDERID as order_id
-,   PAYMENTMETHOD as Payment_Method
-,   STATUS as Payment_Status
-,   Amount / 100 as Payment_Amount
-,   Created as Created_At
-from  RAW.STRIPE.PAYMENT
+    id as customer_id
+,   orderid as order_id
+,   paymentmethod as payment_method
+,   status as payment_status
+,   amount / 100 as payment_amount
+,   created as created_at
+from  raw.stripe.payment
 
 )
 

@@ -18,7 +18,7 @@ final as (
     select 
           orders.order_id
         , orders.customer_id
-        , orders.order_date
+        , orders.order_placed_at
         , order_payments.amount
     from orders
         left join order_payments using (order_id)
