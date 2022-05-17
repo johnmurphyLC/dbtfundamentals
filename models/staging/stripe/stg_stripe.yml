@@ -1,0 +1,21 @@
+version: 2
+
+models:
+    - name: stg_payments
+      description: one unique record per payment attempt
+      columns:
+        - name: customer_id
+          description: Primary key for stg_customers
+          tests:
+            - unique
+            - not_null
+        - name: payment_method
+          description: '{{ doc("payments_amount")}}'
+          tests:
+          - relationships:
+              to: ref('stg_customers')
+              field: customer_id
+              to: ref('stg_orders')
+              field: order_id
+          - accepted_values:
+              values: ['credit_card', 'coupon', 'bank_transfer', 'gift_card']
